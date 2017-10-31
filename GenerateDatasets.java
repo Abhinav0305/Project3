@@ -15,8 +15,8 @@ public class GenerateDatasets {
 	private static int [] age={28,26,27,29,28,30,22,50,24,30,66,70,54,59};
 	private static float [] transTotal={10,11,12,13,14,15,16,17,18,19,100,200,300,400,500,600,900,800,1000,999,111,333,444,332,189,201,401,501,601,901,405,566,666,789};
 	public static void main(String [] args){
-		generateCustomer("Customers");
-		generateTransactions("Transaction");
+		generateCustomer("Customers.csv");
+		generateTransactions("Transaction.csv");
 	}
 	
 	public static void generateCustomer(String filename){
