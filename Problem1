@@ -15,28 +15,28 @@ val df=sparkContext.read.format("csv").option("header","false").option("inferSch
 
 df.show
 
-df.registerTempTable("Transaction")
 
-val T1=df.filter($"TransTotal">200)
+
+val T1=df.filter($"TransTotal">=200)
 
 T1.show
 
-val T2=T1.groupBy("NumItems").agg(sum("TransTotal").alias(""),avg("TransTotal").alias("Average"),min("TransTotal").alias("Minimum"),max("TransTotal").alias("Maximum"))
+val T2=T1.groupBy("NumItems").agg(sum("TransTotal").alias(""),avg("TransTotal").alias("Average"),min("TransTotal").alias("Minimum"),max("TransTotal").alias("Maximum")).sort($"NumItems")
 
 T2.show
-val T3=T1.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust"))
+val T3=T1.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust")).sort($"CustID")
 T3.show
 
-val T4=T1.filter($"TransTotal" > 600)
+val T4=T1.filter($"TransTotal" >=600)
 T4.show
 
-val T5=T4.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust"))
+val T5=T4.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust")).sort($"CustID")
 T5.show
 
 //val T6=T5.join(T3,T5.col("CustID") === T3.col("CustID"),"inner").filter(T5.col("Cust")*3 < T3.col("CustID"))
 
 //T6.show
 
-val T6 = T5.as("T5").join(T3.as("T3"), $"T5.CustID" === $"T3.CustID").filter(T5.col("Cust")*3 < T3.col("Cust")).select($"T3.CustID")
+val T6 = T5.as("T5").join(T3.as("T3"), $"T5.CustID" === $"T3.CustID").filter(T5.col("Cust")*3 < T3.col("Cust")).select($"T3.CustID").sort($"CustID")
 
 T6.show
