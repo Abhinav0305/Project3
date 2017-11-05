@@ -1,0 +1,42 @@
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.SQLContext
+
+val fileName="/home/mqp/TransactionSmall.csv"
+
+val sparkContext=new SQLContext(sc)
+val transactionSchema=StructType(Array(StructField("TransID",IntegerType,true),
+          StructField("CustID",IntegerType,true),
+          StructField("TransTotal",FloatType,true),
+          StructField("NumItems",IntegerType,true),
+          StructField("TransDec",StringType,true)
+))
+
+val df=sparkContext.read.format("csv").option("header","false").option("inferSchema","true").schema(transactionSchema).load(fileName)
+
+df.show
+
+df.registerTempTable("Transaction")
+
+val T1=df.filter($"TransTotal">200)
+
+T1.show
+
+val T2=T1.groupBy("NumItems").agg(sum("TransTotal").alias(""),avg("TransTotal").alias("Average"),min("TransTotal").alias("Minimum"),max("TransTotal").alias("Maximum"))
+
+T2.show
+val T3=T1.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust"))
+T3.show
+
+val T4=T1.filter($"TransTotal" > 600)
+T4.show
+
+val T5=T4.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust"))
+T5.show
+
+//val T6=T5.join(T3,T5.col("CustID") === T3.col("CustID"),"inner").filter(T5.col("Cust")*3 < T3.col("CustID"))
+
+//T6.show
+
+val T6 = T5.as("T5").join(T3.as("T3"), $"T5.CustID" === $"T3.CustID").filter(T5.col("Cust")*3 < T3.col("Cust")).select($"T3.CustID")
+
+T6.show
