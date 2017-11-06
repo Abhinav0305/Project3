@@ -27,7 +27,7 @@ T2.show
 val T3=T1.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust")).sort($"CustID")
 T3.show
 
-val T4=T1.filter($"TransTotal" >=600)
+val T4=df.filter($"TransTotal" >=600)
 T4.show
 
 val T5=T4.select("CustID").groupBy("CustID").agg(count("CustID").alias("Cust")).sort($"CustID")
